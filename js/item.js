@@ -38,7 +38,7 @@ function createCard (response){
     //Setup classes and attribute and append to card
     card.classList.add("col", "card", "p-3");
     newImage.classList.add("img");
-    newImage.setAttribute("width", "50%");
+    newImage.setAttribute("width", "100%");
     newImage.setAttribute("src", img);
     card.appendChild(newImage);
 
@@ -77,6 +77,7 @@ function createCard (response){
     function cartNumbers (response){
         let productNumbers = localStorage.getItem('cartNumbers');
         productNumbers = parseInt(productNumbers);
+        console.log(response.name);
         //if there are any add one to them
         if (productNumbers){
             localStorage.setItem('cartNumbers', productNumbers + 1);
@@ -87,6 +88,7 @@ function createCard (response){
             document.querySelector('.spanCart').textContent = 1;    
         }
         setItems(response);
+        
     }
 
     function setItems (){
@@ -98,15 +100,28 @@ function createCard (response){
         if (cartItems == null){
             cartItems = []; 
         }
-        cartItems.push({
+        let singleProduct = {
+            prodId: response._id,
+            name: response.name,
+            imgUrl: response.imageUrl,
+            selectLense: dropMenu.value,
+            price: response.price,
+            quantity: 1        
+        }
+
+        cartItems.push(singleProduct);
+        /*cartItems.push({
         [response._id]: response
-        });
+        
+        });*/
         localStorage.setItem('productInCart', JSON.stringify(cartItems));
+
     }
+    
 
     //Adds the sum of the products
     function totalCost(response){
-        //console.log('The product price is', response.price /100);
+        console.log('The product price is', response.price /100);
         let cartCost = localStorage.getItem('totalCost');
         if(cartCost != null){
             cartCost = parseInt(cartCost);
@@ -124,9 +139,10 @@ function createCard (response){
             document.querySelector('.spanCart').textContent =  productNumbers;
         }
     }
-    onLoadCartNumbers();
-}
 
+  onLoadCartNumbers();
+
+}
 
 
 init = async () => {

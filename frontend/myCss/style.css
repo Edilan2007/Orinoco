@@ -1,0 +1,54 @@
+table {
+    border-collapse: collapse;
+    width: 90%;
+    margin: 35px auto;
+    max-width: 900px;
+    /*display: inline;*/
+    /*justify-content: center;*/
+}
+
+table td,
+table th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+
+table tr:nth-child(even){
+    background-color: #e9ecef8f;
+
+}
+
+
+tr p {
+    display: inline;
+}
+
+
+.divImage img{
+    margin-right: 20px;
+    display: inline;
+}
+.divImage p {
+    display: inline;
+}
+p {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.quantity{
+    width: 50px;
+}
+#product-total{ 
+    display: flex;
+    justify-content: center;
+    background-color: #e9ecef8f;
+    width: 30%;
+    margin: auto;
+    border-radius: 40px;
+    padding: 10px;
+    min-width: 200px;
+    margin-bottom: 50px;
+}

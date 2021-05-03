@@ -23,14 +23,12 @@ function makeRequest(data) {
 function displayCart() {
   let cartItems = localStorage.getItem('productInCart');
   cartItems = JSON.parse(cartItems);
-  let productContainer = document.querySelector('.products');
   const cartItemsWrapper = document.getElementById('cart_items');
-  //console.log(cartItemsWrapper);
+  console.log(cartItemsWrapper);
 
   console.log(cartItems);
-  console.log(cartItems[0]);
-  console.log(typeof(cartItems[0]));
-  if (cartItems && productContainer) {
+
+  if (cartItems) {
     console.log('running');
     // Creates table with items from localStorage
     for (let i = 0; i < cartItems.length; i++) {
@@ -44,17 +42,15 @@ function displayCart() {
       let divName = document.createElement('td');
       let quantityCell = document.createElement('td');
       priceCell.style.color = '#3bc492';
-
-      let priceString = cartItems[i].price.toString();
-      let price = priceString.substring(0, 3);
-      let priceNum = parseInt(price);
+      
 
       nameCell.innerHTML = cartItems[i].name;
-      lenseCell.innerHTML = cartItems[i].selectLenses;
-      priceCell.innerHTML = (priceNum * cartItems[i].quantity) + ' $';
-      imgCell.setAttribute('src', cartItems[i].imageUrl);
+      lenseCell.innerHTML = cartItems[i].selectLense;
+      priceCell.innerHTML = ((cartItems[i].price / 100) * cartItems[i].quantity) + ' $';
+      imgCell.setAttribute('src', cartItems[i].imgUrl);
+      imgCell.setAttribute("width", "90px")
 
-      btnRemove.innerHTML = `<button class="btn-del" id="remove" onclick='removeItem(${i})'>X</button>`;
+      btnRemove.innerHTML = `<button class="btn-del" id="remove" onclick='deleteItem(${i})'>X</button>`;
       quantityCell.innerHTML = `<input type="number" id="quantity" name="quantity" min="1" value ="${cartItems[i].quantity}" class="quantity" onclick="changeQuantity(${i}, event.target.value)">`;
 
       divName.append(imgCell, nameCell);
@@ -67,6 +63,42 @@ function displayCart() {
 
   }
 }
+//change quantity product
+function changeQuantity (index, value){
+let cartItems = JSON.parse(localStorage.getItem('productInCart'));
+cartItems[index].quantity = parseInt(value);
+localStorage.setItem('productInCart', JSON.stringify(cartItems));
+
+displayCart();
+calculateTotalPrice();
+} 
+
+function calculateTotalPrice(){
+  let totalItemCost = JSON.parse(localStorage.getItem('totalCost'));
+  let total = document.getElementById('total');
+
+  total.innerHTML = totalItemCost + " "+ " $";
+  sessionStorage.setItem('Total', JSON.stringify(totalItemCost));
+  console.log(totalItemCost);
+}
+
+
+//Remove item from cart and update localStorage 
+function deleteItem(index){
+  let cartItems = JSON.parse(localStorage.getItem('productInCart'));
+  cartItems.splice(index, 1);
+
+  
+  //itemNumber = itemNumber - 1;
+  //console.log(cartItems[i].count);
+  localStorage.setItem('productInCart', JSON.stringify(cartItems));
+  //localStorage.setItem('cartNumbers',JSON.stringify(itemNumber));
+  //Re-render.....
+  displayCart();
+  //Re-calculate....
+  calculateTotalPrice();
+
+}
 
 
 
@@ -78,6 +110,7 @@ function onLoadCartNumbers() {
 }
 onLoadCartNumbers();
 displayCart();
+calculateTotalPrice();
 
 
 //ADD event to the submit button
