@@ -71,15 +71,17 @@ localStorage.setItem('productInCart', JSON.stringify(cartItems));
 
 displayCart();
 calculateTotalPrice();
+deleteItem();
 } 
 
 function calculateTotalPrice(){
   let totalItemCost = JSON.parse(localStorage.getItem('totalCost'));
   let total = document.getElementById('total');
-
-  total.innerHTML = totalItemCost + " "+ " $";
+  
+  total.innerHTML = totalItemCost + " $";
   sessionStorage.setItem('Total', JSON.stringify(totalItemCost));
   console.log(totalItemCost);
+
 }
 
 
@@ -88,8 +90,11 @@ function deleteItem(index){
   let cartItems = JSON.parse(localStorage.getItem('productInCart'));
   cartItems.splice(index, 1);
 
-  
-  //itemNumber = itemNumber - 1;
+  let productNumbers = localStorage.getItem('cartNumbers');
+  productNumbers--;
+  localStorage.setItem('cartNumbers', JSON.stringify(productNumbers));
+
+ //itemNumber = itemNumber - 1;
   //console.log(cartItems[i].count);
   localStorage.setItem('productInCart', JSON.stringify(cartItems));
   //localStorage.setItem('cartNumbers',JSON.stringify(itemNumber));
@@ -97,8 +102,9 @@ function deleteItem(index){
   displayCart();
   //Re-calculate....
   calculateTotalPrice();
-
-}
+     
+  }
+  
 
 
 
@@ -113,6 +119,7 @@ displayCart();
 calculateTotalPrice();
 
 
+
 //ADD event to the submit button
 submitBtn.addEventListener('click', ($event) => {
   $event.preventDefault();
@@ -121,9 +128,136 @@ submitBtn.addEventListener('click', ($event) => {
   let cartItems = JSON.parse(localStorage.getItem('.spanCart'));
   for (let i= 0; i< cartItems.length; i++){
     products.push(cartItems[i].prodId);
-    console.log(products);
+    //console.log(products);
   }
+  let contact = {
+    firstName: firstName.value,
+    lastName: lastName.value,
+    email: mailAddress.value,
+    address: address.value,
+    country: country.value,
+    zip: zip.value,
+  }
+  let data = {
+    contact: contact,
+    products: products,
+  }
+
+  if (isFirstNameValid && isLastNameValid && isEmailValid && isAddressValid && isCityValid) {
+    makeRequest(data);
+  }
+  if (isFirstNameValid === false) {
+    invalidFeedback[0].style.display = 'block';
+  }
+  if (isFirstNameValid === true) {
+    invalidFeedback[0].style.display = 'none';
+  }
+  if (isLastNameValid === false) {
+    invalidFeedback[1].style.display = 'block';
+  }
+  if (isLastNameValid === true) {
+    invalidFeedback[1].style.display = 'none';
+  }
+  if (isEmailValid === false) {
+    invalidFeedback[2].style.display = 'block';
+  }
+  if (isEmailValid === true) {
+    invalidFeedback[2].style.display = 'none';
+  }
+  if (isAddressValid === false) {
+    invalidFeedback[3].style.display = 'block';
+  }
+  if (isAddressValid === true) {
+    invalidFeedback[3].style.display = 'none';
+  }
+  if (isCountryValid === false) {
+    invalidFeedback[4].style.display = 'block';
+  }
+  if (isCountryValid === true) {
+    invalidFeedback[4].style.display = 'none';
+  }
+  if (isZipValid === false) {
+    invalidFeedback[5].style.display = 'block';
+  }
+  if (isZipValid === true) {
+    invalidFeedback[5].style.display = 'none';
+  }
+
 });
+
+//firstName Validation
+firstName.addEventListener('blur', () => {
+  const regName = /^[a-zA-Z]+$/;
+  if (!regName.test(firstName.value)) {
+    firstName.style.borderBottom = 'red solid 1px';
+    return false;
+  }
+  else {
+    firstName.style.borderBottom = 'green solid 1px';
+    isFirstNameValid = true;
+  }
+})
+//lasName Validation
+lastName.addEventListener('blur', () => {
+  const regName = /^[a-zA-Z]+$/;
+  if (!regName.test(lastName.value)) {
+    lastName.style.borderBottom = 'red solid 1px';
+    return false;
+  }
+  else {
+    lastName.style.borderBottom = 'green solid 1px';
+    isLastNameValid = true;
+  }
+})
+//mailAddress Validation
+email.addEventListener('blur', () => {
+  const regEmail = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+  if (!regEmail.test(email.value)) {
+    email.style.borderBottom = 'red solid 1px';
+    return false;
+  }
+  else {
+    email.style.borderBottom = 'green solid 1px';
+    isEmailValid = true;
+  }
+})
+//address Validation
+address.addEventListener('blur', () => {
+  const regAddress = /^([a-zäöüß\s\d.,-]+?)\s*([\d\s]+(?:\s?[-|+/]\s?\d+)?\s*[a-z]?)?\s*(\d{5})\s*(.+)?$/;
+  if (!regAddress.test(address.value)) {
+    address.style.borderBottom = 'red solid 1px';
+    return false;
+  }
+  else {
+    address.style.borderBottom = 'green solid 1px';
+    isAddressValid = true;
+  }
+})
+//country Validation
+country.addEventListener('blur', () => {
+  const regName = /^[a-zA-Z]+$/;
+  if (!regName.test(country.value)) {
+    country.style.borderBottom = 'red solid 1px';
+    return false;
+  }
+  else {
+    country.style.borderBottom = 'green solid 1px';
+    isCountryValid = true;
+  }
+})
+//zip Validation
+zip.addEventListener('blur', () => {
+  const regName = /^[0-9]{5}$/;
+  if (!regName.test(zip.value)) {
+    zip.style.borderBottom = 'red solid 1px';
+    return false;
+  }
+  else {
+   zip.style.borderBottom = 'green solid 1px';
+    isZipValid = true;
+  }
+})
+
 
 submitForm = async (orderObject) => {
   try  {
