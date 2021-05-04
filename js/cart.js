@@ -1,3 +1,20 @@
+//DOM ELEMENT REFERENCES
+let firstName = document.getElementById('firstName');
+let lastName = document.getElementById('lastName');
+let mailAddress = document.getElementById('mailAddress');
+let address = document.getElementById('address');
+let country = document.getElementById('country');
+let zip = document.getElementById("zip");
+let invalidFeedback = document.querySelectorAll("invalid-feedback");
+let submitButton = document.getElementById('submitBtn');
+// initialize Validation Boolean To False
+let isFirstNameValid = false;
+let isLastNameValid = false;
+let isEmailValid = false;
+let isAddressValid = false;
+let isCountryValid = false;
+let isZipValid = false;
+
 function makeRequest(data) {
   return  new Promise((resolve, reject) => {
     let apiRequest = new XMLHttpRequest();
@@ -71,16 +88,25 @@ localStorage.setItem('productInCart', JSON.stringify(cartItems));
 
 displayCart();
 calculateTotalPrice();
-deleteItem();
+location.reload(); 
 } 
 
 function calculateTotalPrice(){
-  let totalItemCost = JSON.parse(localStorage.getItem('totalCost'));
+  //let totalItemCost = JSON.parse(localStorage.getItem('totalCost'));
   let total = document.getElementById('total');
+  let cartItems = JSON.parse(localStorage.getItem('productInCart'));
+  let totalCartPrice = 0;
+  if (cartItems){
+    for (let i = 0; cartItems.length; i++){
+      let priceItem = (cartItems[i].price / 100) * cartItems[i].quantity;
+      //let productPrice = priceItem * cartItems[i].quantity;
+      totalCartPrice += priceItem;
+    }
+  }
+  console.log(totalCartPrice);
+  total.innerHTML = totalCartPrice + " $";
+  sessionStorage.setItem('Total', JSON.stringify(totalCartPrice));
   
-  total.innerHTML = totalItemCost + " $";
-  sessionStorage.setItem('Total', JSON.stringify(totalItemCost));
-  console.log(totalItemCost);
 
 }
 
@@ -93,7 +119,7 @@ function deleteItem(index){
   let productNumbers = localStorage.getItem('cartNumbers');
   productNumbers--;
   localStorage.setItem('cartNumbers', JSON.stringify(productNumbers));
-
+  location.reload();
  //itemNumber = itemNumber - 1;
   //console.log(cartItems[i].count);
   localStorage.setItem('productInCart', JSON.stringify(cartItems));
@@ -101,9 +127,8 @@ function deleteItem(index){
   //Re-render.....
   displayCart();
   //Re-calculate....
-  calculateTotalPrice();
-     
-  }
+  calculateTotalPrice();  
+}
   
 
 
@@ -125,7 +150,7 @@ submitBtn.addEventListener('click', ($event) => {
   $event.preventDefault();
   let products = [];
   //get id prod and push it in array
-  let cartItems = JSON.parse(localStorage.getItem('.spanCart'));
+  let cartItems = JSON.parse(localStorage.getItem('productInCart'));
   for (let i= 0; i< cartItems.length; i++){
     products.push(cartItems[i].prodId);
     //console.log(products);
@@ -143,7 +168,7 @@ submitBtn.addEventListener('click', ($event) => {
     products: products,
   }
 
-  if (isFirstNameValid && isLastNameValid && isEmailValid && isAddressValid && isCityValid) {
+  if (isFirstNameValid && isLastNameValid && ismailAddressValid && isAddressValid && isCountryValid && isZipValid) {
     makeRequest(data);
   }
   if (isFirstNameValid === false) {
@@ -185,78 +210,80 @@ submitBtn.addEventListener('click', ($event) => {
 
 });
 
-//firstName Validation
-firstName.addEventListener('blur', () => {
-  const regName = /^[a-zA-Z]+$/;
-  if (!regName.test(firstName.value)) {
-    firstName.style.borderBottom = 'red solid 1px';
-    return false;
-  }
-  else {
-    firstName.style.borderBottom = 'green solid 1px';
-    isFirstNameValid = true;
-  }
-})
-//lasName Validation
-lastName.addEventListener('blur', () => {
-  const regName = /^[a-zA-Z]+$/;
-  if (!regName.test(lastName.value)) {
-    lastName.style.borderBottom = 'red solid 1px';
-    return false;
-  }
-  else {
-    lastName.style.borderBottom = 'green solid 1px';
-    isLastNameValid = true;
-  }
-})
-//mailAddress Validation
-email.addEventListener('blur', () => {
-  const regEmail = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
-  if (!regEmail.test(email.value)) {
-    email.style.borderBottom = 'red solid 1px';
-    return false;
-  }
-  else {
-    email.style.borderBottom = 'green solid 1px';
-    isEmailValid = true;
-  }
-})
-//address Validation
-address.addEventListener('blur', () => {
-  const regAddress = /^([a-zäöüß\s\d.,-]+?)\s*([\d\s]+(?:\s?[-|+/]\s?\d+)?\s*[a-z]?)?\s*(\d{5})\s*(.+)?$/;
-  if (!regAddress.test(address.value)) {
-    address.style.borderBottom = 'red solid 1px';
-    return false;
-  }
-  else {
-    address.style.borderBottom = 'green solid 1px';
-    isAddressValid = true;
-  }
-})
-//country Validation
-country.addEventListener('blur', () => {
-  const regName = /^[a-zA-Z]+$/;
-  if (!regName.test(country.value)) {
-    country.style.borderBottom = 'red solid 1px';
-    return false;
-  }
-  else {
-    country.style.borderBottom = 'green solid 1px';
-    isCountryValid = true;
-  }
-})
-//zip Validation
-zip.addEventListener('blur', () => {
-  const regName = /^[0-9]{5}$/;
-  if (!regName.test(zip.value)) {
-    zip.style.borderBottom = 'red solid 1px';
-    return false;
-  }
-  else {
-   zip.style.borderBottom = 'green solid 1px';
-    isZipValid = true;
-  }
-})
+  //firstName Validation
+  firstName.addEventListener('blur', () => {
+    const regName = /^[a-zA-Z]{3,32}$/;
+    if (!regName.test(firstName.value)) {
+      firstName.style.borderBottom = 'red solid 1px';
+      return false;
+    }
+    else {
+      firstName.style.borderBottom = 'green solid 1px';
+      isFirstNameValid = true;
+    }
+  })
+  //lasName Validation
+  lastName.addEventListener('blur', () => {
+    const regName = /^[a-zA-Z]{3,32}$/;
+    if (!regName.test(lastName.value)) {
+      lastName.style.borderBottom = 'red solid 1px';
+      return false;
+    }
+    else {
+      lastName.style.borderBottom = 'green solid 1px';
+      isLastNameValid = true;
+    }
+  })
+  //mailAddress Validation
+  mailAddress.addEventListener('blur', () => {
+    const regEmail = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+    if (!regEmail.test(mailAddress.value)) {
+      mailAddress.style.borderBottom = 'red solid 1px';
+      return false;
+    }
+    else {
+      mailAddress.style.borderBottom = 'green solid 1px';
+      ismailAddressValid = true;
+    }
+  })
+  //address Validation
+  address.addEventListener('blur', () => {
+    const regAddress = /^([a-zäöüß\s\d.,-]+?)\s*([\d\s]+(?:\s?[-|+/]\s?\d+)?\s*[a-z]?)?\s*(\d{5})\s*(.+)?$/;
+    if (!regAddress.test(address.value)) {
+      address.style.borderBottom = 'red solid 1px';
+      return false;
+    }
+    else {
+      address.style.borderBottom = 'green solid 1px';
+      isAddressValid = true;
+    }
+  })
+  //country Validation
+  country.addEventListener('blur', () => {
+    const regName = /^[a-zA-Z]+$/;
+    if (!regName.test(country.value)) {
+      country.style.borderBottom = 'red solid 1px';
+      return false;
+    }
+    else {
+      country.style.borderBottom = 'green solid 1px';
+      isCountryValid = true;
+    }
+  })
+  //zip Validation
+  zip.addEventListener('blur', () => {
+    const regName = /^[0-9]{5}$/;
+    if (!regName.test(zip.value)) {
+      zip.style.borderBottom = 'red solid 1px';
+      return false;
+    }
+    else {
+     zip.style.borderBottom = 'green solid 1px';
+      isZipValid = true;
+    }
+  })
+
+
 
 
 submitForm = async (orderObject) => {
